@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import socket from "socket.io-client";
 import AuthService from './service/auth';
 import TweetService from './service/tweet';
 import { BrowserRouter } from 'react-router-dom';
@@ -16,6 +17,14 @@ const httpClient = new HttpClient(baseURL);
 const authErrorEventBus = new AuthErrorEventBus();
 const authService = new AuthService(httpClient, tokenStorage);
 const tweetService = new TweetService(httpClient, tokenStorage);
+
+const socketIO = socket(baseURL);
+socketIO.on("connect_error", (error) => {
+  console.log("socket error", error);
+})
+socketIO.on("dwitter", (message) => {
+  console.log("dwowdwawar");
+})
 
 ReactDOM.render(
   <React.StrictMode>
