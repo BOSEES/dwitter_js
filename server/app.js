@@ -1,12 +1,12 @@
-import express from "express";
+import express from 'express';
 import 'express-async-errors';
 import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import tweetsRouter from './router/tweets.js';
 import authRouter from './router/auth.js';
-import { config } from "./config/config.js";
-import { Server } from "socket.io";
+import { config } from './config.js';
+import { initSocket } from './connection/socket.js';
 
 const app = express();
 
@@ -26,20 +26,8 @@ app.use((error, req, res, next) => {
   console.error(error);
   res.sendStatus(500);
 });
-const server = app.listen(config.port, () => {
-  console.log("서버 가동");
+
+const server = app.listen(config.host.port, () => {
+  console.log("서버실행")
 });
-
-const socketIO = new Server(server, {
-  cors: {
-    origin: "*"
-  }
-});
-
-socketIO.on("connection", (socket) => {
-  console.log("client is here");
-})
-
-setInterval(() => {
-  socketIO.emit("dwitter", "hello!!");
-},1000);
+initSocket(server);
